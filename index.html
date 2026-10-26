@@ -3,62 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ग्लोबल VIP उधारी ऐप</title>
+    <title>ग्लोबल AI VIP उधारी लेजर</title>
     <script src="https://cloudflare.com"></script>
     <style>
         body {
             font-family: 'Segoe UI', Arial, sans-serif;
-            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            background: linear-gradient(135deg, #111827, #1f2937);
             margin: 0; padding: 15px;
-            display: flex; justify-content: center; min-height: 100vh; color: #333;
+            display: flex; justify-content: center; min-height: 100vh; color: #f3f4f6;
         }
         .app-container {
-            background: #ffffff; padding: 25px; border-radius: 16px;
+            background: #1f2937; padding: 25px; border-radius: 16px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5); width: 100%; max-width: 480px;
+            border: 1px solid #374151;
         }
-        h1, h2 { text-align: center; color: #2c5364; margin-bottom: 20px; }
+        h1, h2 { text-align: center; color: #f59e0b; margin-bottom: 20px; font-size: 24px; }
+        .tab-box { display: flex; justify-content: space-between; margin-bottom: 20px; }
         .tab-btn {
-            width: 48%; padding: 10px; background: #f1f2f6; border: none;
-            font-weight: bold; cursor: pointer; border-radius: 8px; margin-bottom: 15px;
+            width: 48%; padding: 12px; background: #374151; border: none; color: #fff;
+            font-weight: bold; cursor: pointer; border-radius: 8px; font-size: 14px;
         }
-        .tab-btn.active { background: #2c5364; color: white; }
-        .form-group { margin-bottom: 12px; }
-        label { display: block; margin-bottom: 5px; font-weight: bold; color: #555; }
-        input, select { width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; box-sizing: border-box; }
-        button.main-btn { width: 100%; padding: 14px; background: #27ae60; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; }
+        .tab-btn.active { background: #f59e0b; color: #111827; }
+        .form-group { margin-bottom: 14px; }
+        label { display: block; margin-bottom: 6px; font-weight: bold; color: #9ca3af; font-size: 14px; }
+        input, select { width: 100%; padding: 12px; border: 2px solid #4b5563; border-radius: 8px; box-sizing: border-box; background: #111727; color: #fff; font-size: 15px; }
+        input:focus, select:focus { border-color: #f59e0b; outline: none; }
+        button.main-btn { width: 100%; padding: 14px; background: #10b981; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        button.main-btn:hover { background: #059669; }
         .record-card {
-            background: #f8f9fa; padding: 15px; border-radius: 10px; margin-bottom: 15px;
-            border-left: 6px solid #ccc; box-shadow: 0 3px 6px rgba(0,0,0,0.05);
+            background: #111827; padding: 15px; border-radius: 12px; margin-bottom: 15px;
+            border-left: 6px solid #9ca3af; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            border-top: 1px solid #374151; border-right: 1px solid #374151; border-bottom: 1px solid #374151;
         }
-        .medal-Chhote { border-left-color: #cd7f32; }
-        .medal-Amir { border-left-color: #7f8c8d; }
-        .medal-Rich { border-left-color: #f1c40f; background: #fffdf0; border-right: 2px dashed #f1c40f; }
-        .action-box { display: flex; justify-content: space-between; margin-top: 10px; gap: 5px; }
-        .btn-sm { padding: 8px 12px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; color: white; font-size: 12px; }
+        .medal-Chhote { border-left-color: #b45309; }
+        .medal-Amir { border-left-color: #9ca3af; }
+        .medal-Rich { border-left-color: #f59e0b; background: linear-gradient(180deg, #111827, #1e1b4b); }
+        .action-box { display: flex; justify-content: space-between; margin-top: 12px; gap: 5px; flex-wrap: wrap; }
+        .btn-sm { padding: 8px 10px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; color: white; font-size: 11px; flex: 1; text-align: center; }
         .btn-wa { background: #25D366; }
-        .btn-pay { background: #3498db; }
-        .btn-del { background: #e74c3c; }
+        .btn-pay { background: #3b82f6; }
+        .btn-del { background: #ef4444; }
         #qrcode-modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8); justify-content: center; align-items: center; z-index: 1000;
+            background: rgba(0,0,0,0.85); justify-content: center; align-items: center; z-index: 1000;
         }
-        .modal-content { background: white; padding: 30px; border-radius: 12px; text-align: center; }
+        .modal-content { background: #1f2937; padding: 30px; border-radius: 12px; text-align: center; border: 1px solid #374151; }
+        .modal-content h3 { color: #f59e0b; }
+        .date-badge { font-size: 11px; background: #374151; padding: 2px 6px; border-radius: 4px; color: #d1d5db; display: inline-block; margin-top: 4px; margin-right: 4px; }
     </style>
 </head>
 <body>
 
 <div class="app-container">
-    <h1>💼 VIP ग्लोबल उधारी लेजर</h1>
+    <h1>💼 VIP ग्लोबल AI उधारी लेजर</h1>
     
-    <div style="display:flex; justify-content:space-between;">
-        <button id="btnTab1" class="tab-btn active" onclick="switchTab(1)">📝 उधारी जोड़ें</button>
-        <button id="btnTab2" class="tab-btn" onclick="switchTab(2)">🏦 बैंक सेटिंग्स</button>
+    <div class="tab-box">
+        <button id="btnTab1" class="tab-btn active" onclick="switchTab(1)">📝 नया हिसाब जोड़ें</button>
+        <button id="btnTab2" class="tab-btn" onclick="switchTab(2)">🏦 मर्चेंट बैंक सेटिंग्स</button>
     </div>
 
     <div id="tab-entry">
         <div class="form-group">
             <label>व्यापारी / दिग्गज का नाम:</label>
-            <input type="text" id="name" placeholder="नाम लिखें...">
+            <input type="text" id="name" placeholder="उदा: Elon Musk या स्थानीय व्यापारी">
         </div>
         <div class="form-group">
             <label>WhatsApp मोबाइल नंबर (91 के साथ):</label>
@@ -76,41 +83,53 @@
             <input type="number" id="amount" placeholder="0.00">
         </div>
         <div class="form-group">
+            <label>उधारी देने की तारीख:</label>
+            <input type="date" id="giveDate">
+        </div>
+        <div class="form-group">
+            <label>AI ऑटो-रिमाइंडर की तारीख (वादे का दिन):</label>
+            <input type="date" id="remDate">
+        </div>
+        <div class="form-group">
             <label>मेडल श्रेणी (लेवल):</label>
             <select id="medal">
                 <option value="Chhote">🪙 चूनें मैन (छोटे व्यापारी)</option>
                 <option value="Amir">🥈 अमीर मैन ($5 से $500 मध्यम वर्ग)</option>
-                <option value="Rich">🥇 रिच VIP मैन ($5,000+ एलन मस्क/अंबानी लेवल)</option>
+                <option value="Rich">🥇 रिच VIP मैन ($5,000+ एलन मस्क/अंबानी Level)</option>
             </select>
         </div>
-        <button class="main-btn" onclick="addRecord()">सुरक्षित VIP रिकॉर्ड जोड़ें</button>
+        <button class="main-btn" onclick="addRecord()">सुरक्षित VIP रिकॉर्ड और AI टाइमर सेट करें</button>
         
-        <h2>📋 ग्लोबल लेजर सूची</h2>
+        <h2>📋 ग्लोबल लेजर सूची (तारीख और AI ट्रैकर के साथ)</h2>
         <div id="listContainer"></div>
     </div>
 
     <div id="tab-bank" style="display:none;">
         <h3>यहाँ अपना मर्चेंट UPI सेट करें</h3>
-        <p style="font-size:12px; color:green;">*भारतीय रुपयों (₹) का भुगतान सीधे इसी खाते में आएगा।</p>
+        <p style="font-size:12px; color:#10b981;">*पैसा सीधे इसी खाते में सुरक्षित ट्रांसफर होगा।</p>
         <div class="form-group">
             <label>अपनी UPI ID डालें:</label>
             <input type="text" id="merchantUpi" placeholder="example@upi">
         </div>
-        <button class="main-btn" style="background:#2c5364;" onclick="saveBankSettings()">बैंक सेटिंग्स सुरक्षित करें</button>
+        <button class="main-btn" style="background:#374151;" onclick="saveBankSettings()">बैंक सेटिंग्स सुरक्षित करें</button>
     </div>
 </div>
 
 <div id="qrcode-modal">
     <div class="modal-content">
         <h3>स्कैन करके भुगतान करें</h3>
-        <div id="qrcode" style="display:inline-block; margin:15px;"></div>
-        <p>यह कोड केवल भारतीय रुपयों (₹) के ट्रांसफर के लिए काम करेगा।</p>
-        <button class="main-btn" style="background:#e74c3c;" onclick="closeModal()">बंद करें</button>
+        <div id="qrcode" style="display:inline-block; margin:15px; padding:10px; background:white; border-radius:8px;"></div>
+        <p style="color:#d1d5db;">यह कोड केवल भारतीय रुपयों (₹) के ट्रांसफर के लिए काम करेगा।</p>
+        <button class="main-btn" style="background:#ef4444;" onclick="closeModal()">बंद करें</button>
     </div>
 </div>
 
 <script>
     document.addEventListener("DOMContentLoaded", () => {
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById("giveDate").value = today;
+        document.getElementById("remDate").value = today;
+        
         showRecords();
         if(localStorage.getItem("merchantUpi")) {
             document.getElementById("merchantUpi").value = localStorage.getItem("merchantUpi");
@@ -144,10 +163,11 @@
         const phone = document.getElementById("phone").value.trim();
         const amount = parseFloat(document.getElementById("amount").value.trim());
         const currency = document.getElementById("currency").value;
+        const giveDate = document.getElementById("giveDate").value;
+        const remDate = document.getElementById("remDate").value;
         const medal = document.getElementById("medal").value;
-        const date = new Date().toLocaleDateString('hi-IN');
 
-        if(!name || !phone || !amount) { alert("सभी बॉक्स भरें!"); return; }
+        if(!name || !phone || !amount || !giveDate || !remDate) { alert("कृपया तारीखों समेत सभी बॉक्स भरें!"); return; }
 
         if (medal === "Amir" && currency === "$" && (amount < 5 || amount > 500)) {
             alert("सुरक्षा अलर्ट: 'अमीर मैन' कैटगरी में डॉलर की सीमा $5 से $500 के बीच होनी चाहिए!");
@@ -162,7 +182,10 @@
             return;
         }
 
-        const record = { name, phone, amount, currency, medal, date };
+        const fGiveDate = new Date(giveDate).toLocaleDateString('hi-IN');
+        const fRemDate = new Date(remDate).toLocaleDateString('hi-IN');
+
+        const record = { name, phone, amount, currency, giveDate: fGiveDate, remDate: fRemDate, rawRemDate: remDate, medal };
         let records = JSON.parse(localStorage.getItem("globalVipData")) || [];
         records.push(record);
         localStorage.setItem("globalVipData", JSON.stringify(records));
@@ -174,40 +197,4 @@
     }
 
     function showRecords() {
-        const container = document.getElementById("listContainer");
-        container.innerHTML = "";
-        let records = JSON.parse(localStorage.getItem("globalVipData")) || [];
-
-        records.forEach((item, index) => {
-            const card = document.createElement("div");
-            card.className = `record-card medal-${item.medal}`;
-            
-            let mText = item.medal === "Chhote" ? "चूनें मैन" : item.medal === "Amir" ? "अमीर मैन" : "⚡ रिच VIP दिग्गज";
-
-            card.innerHTML = `
-                <div>
-                    <strong>${item.name}</strong> (${mText})<br>
-                    <small>तारीख: ${item.date} | मो: ${item.phone}</small><br>
-                    <span style="font-size:20px; color:#27ae60; font-weight:bold;">${item.currency}${item.amount.toLocaleString()}</span>
-                </div>
-                <div class="action-box">
-                    <button class="btn-sm btn-wa" onclick="sendReminder(${index})">💬 रिमाइंडर (8 AM - 3 PM)</button>
-                    <button class="btn-sm btn-pay" onclick="generateQR(${index})">📱 QR कोड</button>
-                    <button class="btn-sm btn-del" onclick="deleteRecord(${index})">चुक्ता</button>
-                </div>
-            `;
-            container.appendChild(card);
-        });
-    }
-
-    function sendReminder(index) {
-        const currentHour = new Date().getHours();
-        if (currentHour < 8 || currentHour >= 15) {
-            alert("सुरक्षा नियम: बड़े बिजनेसमैन को रिमाइंडर केवल सुबह 8:00 से दोपहर 3:00 बजे के बीच ही भेजा जा सकता है!");
-            return;
-        }
-
-        let records = JSON.parse(localStorage.getItem("globalVipData")) || [];
-        const item = records[index];
-
     
