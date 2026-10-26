@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>अल्ट्रा सिक्योर उधारी डायरी</title>
+    <script src="https://cloudflare.com"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            margin: 0; padding: 15px;
+            display: flex; justify-content: center; min-height: 100vh; color: #333;
+        }
+        .app-container {
+            background: #ffffff; padding: 25px; border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3); width: 100%; max-width: 480px;
+        }
+        h1, h2 { text-align: center; color: #1e3c72; margin-bottom: 20px; }
+        .tab-btn {
+            width: 48%; padding: 10px; background: #f1f2f6; border: none;
+            font-weight: bold; cursor: pointer; border-radius: 8px; margin-bottom: 15px;
+        }
+        .tab-btn.active { background: #1e3c72; color: white; }
+        .form-group { margin-bottom: 12px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; color: #555; }
+        input, select { width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+        button.main-btn { width: 100%; padding: 14px; background: #27ae60; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; }
+        .record-card {
+            background: #f8f9fa; padding: 15px; border-radius: 10px; margin-bottom: 15px;
+            border-left: 6px solid #ccc; box-shadow: 0 3px 6px rgba(0,0,0,0.05);
+        }
+        .medal-Chhote { border-left-color: #cd7f32; }
+        .medal-Amir { border-left-color: #7f8c8d; }
+        .medal-Rich { border-left-color: #f1c40f; background: #fffdf0; }
+        .action-box { display: flex; justify-content: space-between; margin-top: 10px; gap: 5px; }
+        .btn-sm { padding: 8px 12px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; color: white; font-size: 12px; }
+        .btn-wa { background: #25D366; }
+        .btn-pay { background: #3498db; }
+        .btn-del { background: #e74c3c; }
+        #qrcode-modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); justify-content: center; align-items: center; z-index: 1000;
+        }
+        .modal-content { background: white; padding: 30px; border-radius: 12px; text-align: center; }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <h1>📒 VIP डिजिटल उधारी ऐप</h1>
+    
+    <div style="display:flex; justify-content:space-between;">
+        <button id="btnTab1" class="tab-btn active" onclick="switchTab(1)">📝 उधारी जोड़ें</button>
+        <button id="btnTab2" class="tab-btn" onclick="switchTab(2)">🏦 बैंक सेटिंग्स</button>
+    </div>
+
+    <div id="tab-entry">
+        <div class="form-group">
+            <label>ग्राहक का नाम:</label>
+            <input type="text" id="name" placeholder="नाम लिखें...">
+        </div>
+        <div class="form-group">
+            <label>मोबाइल नंबर (WhatsApp):</label>
+            <input type="number" id="phone" placeholder="91XXXXXXXXXX">
+        </div>
+        <div class="form-group">
+            <label>उधारी राशि (₹):</label>
+            <input type="number" id="amount" placeholder="0.00">
+        </div>
+        <div class="form-group">
+            <label>मेडल श्रेणी:</label>
+            <select id="medal">
+                <option value="Chhote">🪙 चूनें मैन (छोटे व्यापारी)</option>
+                <option value="Amir">🥈 अमीर मैन (मध्यम वर्ग)</option>
+                <option value="Rich">🥇 रिच मैन (VIP / एलन मस्क स्तर)</option>
+            </select>
+        </div>
+        <button class="main-btn" onclick="addRecord()">सुरक्षित रिकॉर्ड जोड़ें</button>
+        
+        <h2>📋 उधारी सूची</h2>
+        <div id="listContainer"></div>
+    </div>
+
+    <div id="tab-bank" style="display:none;">
+        <h3>यहाँ अपना मर्चेंट UPI सेट करें</h3>
+        <p style="font-size:12px; color:green;">*पैसा सीधे इसी अकाउंट में सुरक्षित ट्रांसफर होगा।</p>
+        <div class="form-group">
+            <label>अपनी UPI ID डालें (जैसे: name@oksbi):</label>
+            <input type="text" id="merchantUpi" placeholder="example@upi">
+        </div>
+        <button class="main-btn" style="background:#1e3c72;" onclick="saveBankSettings()">बैंक सेटिंग्स सुरक्षित करें</button>
+    </div>
+</div>
+
+<div id="qrcode-modal">
+    <div class="modal-content">
+        <h3>स्कैन करके भुगतान करें</h3>
+        <div id="qrcode" style="display:inline-block; margin:15px;"></div>
+        <p>पैसा सीधे दुकानदार के बैंक खाते में जाएगा।</p>
+        <button class="main-btn" style="background:#e74c3c;" onclick="closeModal()">बंद करें</button>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        showRecords();
+        if(localStorage.getItem("merchantUpi")) {
+            document.getElementById("merchantUpi").value = localStorage.getItem("merchantUpi");
+        }
+    });
+
+    function switchTab(tabNum) {
+        if(tabNum === 1) {
+            document.getElementById("tab-entry").style.display = "block";
+            document.getElementById("tab-bank").style.display = "none";
+            document.getElementById("btnTab1").classList.add("active");
+            document.getElementById("btnTab2").classList.remove("active");
+        } else {
+            document.getElementById("tab-entry").style.display = "none";
+            document.getElementById("tab-bank").style.display = "block";
+            document.getElementById("btnTab1").classList.remove("active");
+            document.getElementById("btnTab2").classList.add("active");
+        }
+    }
+
+    function saveBankSettings() {
+        const upi = document.getElementById("merchantUpi").value.trim();
+        if(!upi.includes("@")) { alert("कृपया सही UPI ID डालें!"); return; }
+        localStorage.setItem("merchantUpi", upi);
+        alert("बैंक खाता सफलतापूर्वक लिंक हो गया!");
+        switchTab(1);
+    }
+
+    function addRecord() {
+        const name = document.getElementById("name").value.trim();
+        const phone = document.getElementById("phone").value.trim();
+        const amount = document.getElementById("amount").value.trim();
+        const medal = document.getElementById("medal").value;
+        const date = new Date().toLocaleDateString('hi-IN');
+
+        if(!name || !phone || !amount) { alert("सभी बॉक्स भरें!"); return; }
+
+        const record = { name, phone, amount, medal, date };
+        let records = JSON.parse(localStorage.getItem("vipUdhaarData")) || [];
+        records.push(record);
+        localStorage.setItem("vipUdhaarData", JSON.stringify(records));
+
+        document.getElementById("name").value = "";
+        document.getElementById("phone").value = "";
+        document.getElementById("amount").value = "";
+        showRecords();
+    }
+
+    function showRecords() {
+        const container = document.getElementById("listContainer");
+        container.innerHTML = "";
+        let records = JSON.parse(localStorage.getItem("vipUdhaarData")) || [];
+
+        records.forEach((item, index) => {
+            const card = document.createElement("div");
+            card.className = `record-card medal-${item.medal}`;
+            
+            let mText = item.medal === "Chhote" ? "चूनें मैन" : item.medal === "Amir" ? "अमीर मैन" : "🥇 रिच VIP";
+
+            card.innerHTML = `
+                <div>
+                    <strong>${item.name}</strong> (${mText})<br>
+                    <small>तारीख: ${item.date} | मो: ${item.phone}</small><br>
+                    <span style="font-size:18px; color:#27ae60; font-weight:bold;">₹${item.amount}</span>
+                </div>
+                <div class="action-box">
+                    <button class="btn-sm btn-wa" onclick="sendReminder(${index})">💬 रिमाइंडर (8 AM - 3 PM)</button>
+                    <button class="btn-sm btn-pay" onclick="generateQR('${item.amount}')">📱 QR कोड</button>
+                    <button class="btn-sm btn-del" onclick="deleteRecord(${index})">चुक्ता</button>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    function sendReminder(index) {
+        const currentHour = new Date().getHours();
+        if (currentHour < 8 || currentHour >= 15) {
+            alert("नियम अनुसार: रिमाइंडर केवल सुबह 8:00 बजे से दोपहर 3:00 बजे के बीच ही भेजा जा सकता है!");
+            return;
+        }
+
+        let records = JSON.parse(localStorage.getItem("vipUdhaarData")) || [];
+        const item = records[index];
+        const upi = localStorage.getItem("merchantUpi") || "";
+        
+        let msg = `नमस्ते ${item.name}, आपकी ₹${item.amount} की उधारी बाकी है जो आपने ${item.date} को ली थी। कृपया तुरंत भुगतान करें।`;
+        if(upi) {
+            msg += ` आप इस UPI ID पर सीधे ट्रांसफर कर सकते हैं: ${upi}`;
+        }
+        
+        window.open(`https://whatsapp.com{item.phone}&text=${encodeURIComponent(msg)}`, '_blank');
+    }
+
+    function generateQR(amount) {
+        const upi = localStorage.getItem("merchantUpi");
+        if(!upi) { alert("पहले 'बैंक सेटिंग्स' में जाकर अपना UPI ID लिंक करें!"); return; }
+
+        document.getElementById("qrcode").innerHTML = "";
+        const upiLink = `upi://pay?pa=${upi}&pn=Merchant&am=${amount}&cu=INR`;
+        
+        new QRCode(document.getElementById("qrcode"), {
+            text: upiLink,
+            width: 180,
+            height: 180
+        });
+        document.getElementById("qrcode-modal").style.display = "flex";
+    }
+
+    function closeModal() { document.getElementById("qrcode-modal").style.display = "none"; }
+    function deleteRecord(index) {
+        if(confirm("क्या यह उधारी पूरी तरह से चुक्ता हो गई है?")) {
+            let records = JSON.parse(localStorage.getItem("vipUdhaarData")) || [];
+  
